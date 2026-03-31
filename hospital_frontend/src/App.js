@@ -6,7 +6,13 @@ import AdminDashboard from './dashboards/AdminDashboard';
 import DoctorDashboard from './dashboards/DoctorDashboard';
 import PatientDashboard from './dashboards/PatientDashboard';
 import './styles/auth.css';
-
+//  import './styles/dashboard.css';
+//  import './styles/glassmorphism.css';
+//  import './styles/animations.css';
+//  import './styles/buttons.css';
+//  import './styles/gradients.css';
+//  import './styles/dashboardlayout.css';
+// import './styles/forms.css';
 const PrivateRoute = ({ children, requiredRole }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [userRole, setUserRole] = useState(null);

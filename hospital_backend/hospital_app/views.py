@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -170,6 +171,43 @@ class DoctorViewSet(viewsets.ModelViewSet):
         if self.request.user.role == 'admin':
             return Doctor.objects.all()
         return Doctor.objects.filter(is_available=True)
+
+    def create(self, request, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response({'error': 'Only admins can create doctors.'}, status=status.HTTP_403_FORBIDDEN)
+
+        user_data = {
+            'username': request.data.get('username'),
+            'email': request.data.get('email'),
+            'password': request.data.get('password'),
+            'first_name': request.data.get('first_name'),
+            'last_name': request.data.get('last_name'),
+            'phone': request.data.get('phone'),
+            'role': 'doctor',
+        }
+
+        user_serializer = UserSerializer(data=user_data)
+        user_serializer.is_valid(raise_exception=True)
+
+        with transaction.atomic():
+            user = user_serializer.save()
+            doctor_data = {
+                'user_id': user.id,
+                'specialization': request.data.get('specialization'),
+                'license_number': request.data.get('license_number'),
+                'qualification': request.data.get('qualification'),
+                'years_of_experience': request.data.get('years_of_experience'),
+                'consultation_fee': request.data.get('consultation_fee'),
+                'clinic_address': request.data.get('clinic_address'),
+                'available_time_start': request.data.get('available_time_start'),
+                'available_time_end': request.data.get('available_time_end'),
+                'is_available': request.data.get('is_available', True),
+            }
+            doctor_serializer = self.get_serializer(data=doctor_data)
+            doctor_serializer.is_valid(raise_exception=True)
+            doctor = doctor_serializer.save()
+
+        return Response(self.get_serializer(doctor).data, status=status.HTTP_201_CREATED)
     
     @action(detail=False, methods=['get'])
     def my_profile(self, request):
@@ -205,16 +243,24 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         return Appointment.objects.all()
     
     def create(self, request, *args, **kwargs):
-        if request.user.role != 'patient':
-            return Response({'error': 'Only patients can book appointments'}, 
-                          status=status.HTTP_403_FORBIDDEN)
-        
-        try:
-            patient = Patient.objects.get(user=request.user)
-            request.data['patient'] = patient.id
-            return super().create(request, *args, **kwargs)
-        except Patient.DoesNotExist:
-            return Response({'error': 'Patient profile not found'}, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+
+        if request.user.role == 'patient':
+            patient, created = Patient.objects.get_or_create(user=request.user)
+            data['patient'] = patient.id
+        elif request.user.role == 'admin':
+            if not data.get('patient'):
+                return Response({'error': 'Patient ID is required for admin appointment creation'}, status=status.HTTP_400_BAD_REQUEST)
+            if not Patient.objects.filter(id=data.get('patient')).exists():
+                return Response({'error': 'Patient not found'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Only patients and admins can book appointments'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     @action(detail=True, methods=['post'])
     def cancel(self, request, pk=None):

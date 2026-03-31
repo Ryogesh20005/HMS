@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
 import '../styles/auth.css';
-
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -44,7 +43,7 @@ const Login = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <h1>🏥 Hospital Management System</h1>
+                    <h1>🏥 CHOLAN HOSPITAL </h1>
                     <p>Login to your account</p>
                 </div>
                 

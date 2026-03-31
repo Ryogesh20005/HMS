@@ -6,7 +6,7 @@ import {
     appointmentService,
     billingService,
 } from '../services/api';
-import '../styles/auth.css';
+
 
 const PatientDashboard = () => {
     const navigate = useNavigate();
@@ -15,6 +15,8 @@ const PatientDashboard = () => {
     const [appointments, setAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [billings, setBillings] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [specializationFilter, setSpecializationFilter] = useState('');
     const [loading, setLoading] = useState(false);
     const [showBookingForm, setShowBookingForm] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -64,8 +66,41 @@ const PatientDashboard = () => {
             setSelectedDoctor(null);
             alert('Appointment booked successfully');
         } catch (error) {
-            alert('Failed to book appointment');
+            const message =
+                error.response?.data?.detail ||
+                error.response?.data?.error ||
+                error.response?.data ||
+                error.message ||
+                'Failed to book appointment';
+            alert(message);
         }
+    };
+
+    const loadDoctors = async (filters = {}) => {
+        try {
+            const doctorParams = {};
+            const currentSearch = filters.hasOwnProperty('search') ? filters.search : searchQuery;
+            const currentSpecialization = filters.hasOwnProperty('specialization') ? filters.specialization : specializationFilter;
+
+            if (currentSearch) doctorParams.search = currentSearch;
+            if (currentSpecialization) doctorParams.specialization = currentSpecialization;
+
+            const doctorsRes = await doctorService.getDoctors(doctorParams);
+            setDoctors(doctorsRes.data.results || doctorsRes.data);
+        } catch (error) {
+            alert('Failed to load doctors');
+        }
+    };
+
+    const handleSearchDoctors = async (e) => {
+        if (e) e.preventDefault();
+        await loadDoctors();
+    };
+
+    const handleClearDoctorSearch = () => {
+        setSearchQuery('');
+        setSpecializationFilter('');
+        loadDoctors({ search: '', specialization: '' });
     };
 
     const handleCancelAppointment = async (appointmentId) => {
@@ -212,20 +247,74 @@ const PatientDashboard = () => {
                                 <h2>Available Doctors</h2>
                             </div>
                             <div className="grid grid-2">
+                                <form className="search-bar" onSubmit={handleSearchDoctors} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                            <input
+                                type="text"
+                                placeholder="Search by doctor name or specialty"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="input"
+                                style={{ flex: '1 1 220px' }}
+                            />
+                            <select
+                                value={specializationFilter}
+                                onChange={(e) => setSpecializationFilter(e.target.value)}
+                                className="input"
+                                style={{ flex: '0 0 200px' }}
+                            >
+                                <option value="">All Specializations</option>
+                                <option value="general">General Medicine</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="dermatology">Dermatology</option>
+                                <option value="neurology">Neurology</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="psychiatry">Psychiatry</option>
+                                <option value="surgery">Surgery</option>
+                                <option value="gynecology">Gynecology</option>
+                            </select>
+                            <button type="submit" className="btn btn-secondary" style={{ flex: '0 0 auto' }}>
+                                Search
+                            </button>
+                            <button type="button" className="btn btn-light" style={{ flex: '0 0 auto' }} onClick={handleClearDoctorSearch}>
+                                Clear
+                            </button>
+                        </form>
+                        {doctors.length === 0 ? (
+                            <div className="card">
+                                <p>No doctors found. Try another search term or select a different specialization.</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-2">
                                 {doctors.map((doctor) => (
                                     <div key={doctor.id} className="card" style={{ cursor: 'pointer' }}>
-                                        <h3>Dr. {doctor.user?.first_name} {doctor.user?.last_name}</h3>
-                                        <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
-                                            {doctor.specialization}
-                                        </p>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div>
+                                                <h3>Dr. {doctor.user?.first_name} {doctor.user?.last_name}</h3>
+                                                <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
+                                                    {doctor.specialization}
+                                                </p>
+                                            </div>
+                                            <span className={`badge badge-${doctor.is_available ? 'success' : 'danger'}`}>
+                                                {doctor.is_available ? 'Available' : 'Unavailable'}
+                                            </span>
+                                        </div>
                                         <p style={{ marginTop: '8px' }}>
                                             <strong>Qualification:</strong> {doctor.qualification}
                                         </p>
                                         <p>
                                             <strong>Experience:</strong> {doctor.years_of_experience} years
                                         </p>
+                                        {doctor.clinic_address && (
+                                            <p>
+                                                <strong>Clinic:</strong> {doctor.clinic_address}
+                                            </p>
+                                        )}
                                         <p>
                                             <strong>Fee:</strong> ${doctor.consultation_fee}
+                                        </p>
+                                        <p>
+                                            <strong>Hours:</strong> {doctor.available_time_start} - {doctor.available_time_end}
                                         </p>
                                         <button
                                             className="btn btn-primary"
@@ -239,6 +328,8 @@ const PatientDashboard = () => {
                                         </button>
                                     </div>
                                 ))}
+                            </div>
+                        )}
                             </div>
                         </div>
 

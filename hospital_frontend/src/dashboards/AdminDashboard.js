@@ -8,6 +8,7 @@ import {
 } from '../services/api';
 import '../styles/auth.css';
 
+
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [activeMenu, setActiveMenu] = useState('overview');
@@ -153,10 +154,32 @@ const AdminDashboard = () => {
                 }
             } else if (formType === 'doctor') {
                 if (editingId) {
-                    await doctorService.updateDoctor(editingId, formData);
+                    const updatePayload = {
+                        specialization: formData.specialization,
+                        license_number: formData.license_number,
+                        qualification: formData.qualification,
+                        years_of_experience: formData.years_of_experience,
+                        consultation_fee: formData.consultation_fee,
+                        is_available: formData.is_available,
+                    };
+                    await doctorService.updateDoctor(editingId, updatePayload);
                     alert('Doctor updated successfully');
                 } else {
-                    await doctorService.createDoctor(formData);
+                    const payload = {
+                        username: formData.username,
+                        email: formData.email,
+                        password: formData.password,
+                        first_name: formData.first_name,
+                        last_name: formData.last_name,
+                        phone: formData.phone,
+                        specialization: formData.specialization,
+                        license_number: formData.license_number,
+                        qualification: formData.qualification,
+                        years_of_experience: formData.years_of_experience,
+                        consultation_fee: formData.consultation_fee,
+                        is_available: formData.is_available,
+                    };
+                    await doctorService.createDoctor(payload);
                     alert('Doctor created successfully');
                 }
             } else if (formType === 'appointment') {
@@ -528,6 +551,34 @@ const AdminDashboard = () => {
                                 )}
                                 {formType === 'doctor' && (
                                     <>
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label>Username</label>
+                                                <input type="text" name="username" value={formData.username || ''} onChange={handleFormChange} placeholder="Username" required />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Email</label>
+                                                <input type="email" name="email" value={formData.email || ''} onChange={handleFormChange} placeholder="Email" required />
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label>First Name</label>
+                                                <input type="text" name="first_name" value={formData.first_name || ''} onChange={handleFormChange} placeholder="First name" required />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Last Name</label>
+                                                <input type="text" name="last_name" value={formData.last_name || ''} onChange={handleFormChange} placeholder="Last name" required />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Password</label>
+                                            <input type="password" name="password" value={formData.password || ''} onChange={handleFormChange} placeholder="Password" required />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Phone</label>
+                                            <input type="tel" name="phone" value={formData.phone || ''} onChange={handleFormChange} placeholder="Phone number" />
+                                        </div>
                                         <div className="form-group">
                                             <label>Specialization</label>
                                             <select name="specialization" value={formData.specialization || ''} onChange={handleFormChange}>
