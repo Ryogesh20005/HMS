@@ -1,2 +1,2 @@
-web: gunicorn --chdir hospital_backend hospital_project.wsgi
+web: gunicorn wsgi:application
 release: cd hospital_backend && python manage.py migrate

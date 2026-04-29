@@ -5,7 +5,7 @@ services:
     region: oregon
     plan: free
     buildCommand: cd hospital_backend && pip cache purge && pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input
-    startCommand: gunicorn --chdir hospital_backend hospital_project.wsgi
+    startCommand: gunicorn wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.4
