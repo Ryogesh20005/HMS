@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hospital-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: cd hospital_backend && pip cache purge && pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input
+    startCommand: gunicorn wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.4
+      - key: DEBUG
+        value: false
+      - key: USE_SQLITE
+        value: false
