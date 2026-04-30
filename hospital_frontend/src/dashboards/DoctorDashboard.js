@@ -13,7 +13,7 @@ const DoctorDashboard = () => {
     const [doctorProfile, setDoctorProfile] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [patients, setPatients] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // eslint-disable-line no-unused-vars
     const [editingProfile, setEditingProfile] = useState(false);
 
     useEffect(() => {

@@ -17,7 +17,7 @@ const PatientDashboard = () => {
     const [billings, setBillings] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [specializationFilter, setSpecializationFilter] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // eslint-disable-line no-unused-vars
     const [showBookingForm, setShowBookingForm] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
 
