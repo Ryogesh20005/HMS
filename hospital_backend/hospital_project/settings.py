@@ -15,7 +15,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-hospital-management-s
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost,.onrender.com').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -62,25 +62,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hospital_project.wsgi.application'
 
-# Database
-if config('USE_SQLITE', default=True, cast=bool):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+# Database - PostgreSQL only for production
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default='hms_db'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='yosh#####'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+        'CONN_MAX_AGE': 600,
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME', default='hms_db'),
-            'USER': config('DB_USER', default='postgres'),
-            'PASSWORD': config('DB_PASSWORD', default=''),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
-        }
-    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

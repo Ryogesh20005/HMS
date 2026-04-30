@@ -11,5 +11,3 @@ services:
         value: 3.11.4
       - key: DEBUG
         value: false
-      - key: USE_SQLITE
-        value: false
