@@ -38,6 +38,14 @@ const AdminDashboard = () => {
             setAppointments(appointmentsRes.data.results || appointmentsRes.data);
             setBillings(billingsRes.data.results || billingsRes.data);
         } catch (error) {
+            if (error.response?.status === 401) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user');
+                alert('Session expired. Please log in again.');
+                navigate('/login');
+                return;
+            }
             alert('Failed to load data: ' + (error.response?.data?.detail || error.message));
         }
     };
@@ -220,14 +228,17 @@ const AdminDashboard = () => {
     return (
         <div className="dashboard-layout">
             <div className="sidebar">
-                <div className="sidebar-header">🏥 Admin Panel</div>
+                <div className="sidebar-header">
+                    <span style={{ fontSize: '24px' }}>🏥</span>
+                    <span>Admin Panel</span>
+                </div>
                 <ul className="sidebar-menu">
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'overview' ? 'active' : ''}`}
                             onClick={() => setActiveMenu('overview')}
                         >
-                            📊 Overview
+                            <span>📊</span> Overview
                         </button>
                     </li>
                     <li>
@@ -235,7 +246,7 @@ const AdminDashboard = () => {
                             className={`sidebar-link ${activeMenu === 'patients' ? 'active' : ''}`}
                             onClick={() => setActiveMenu('patients')}
                         >
-                            👥 Patients
+                            <span>👥</span> Patients
                         </button>
                     </li>
                     <li>
@@ -243,7 +254,7 @@ const AdminDashboard = () => {
                             className={`sidebar-link ${activeMenu === 'doctors' ? 'active' : ''}`}
                             onClick={() => setActiveMenu('doctors')}
                         >
-                            👨‍⚕️ Doctors
+                            <span>👨‍⚕️</span> Doctors
                         </button>
                     </li>
                     <li>
@@ -251,7 +262,7 @@ const AdminDashboard = () => {
                             className={`sidebar-link ${activeMenu === 'appointments' ? 'active' : ''}`}
                             onClick={() => setActiveMenu('appointments')}
                         >
-                            📅 Appointments
+                            <span>📅</span> Appointments
                         </button>
                     </li>
                     <li>
@@ -259,19 +270,22 @@ const AdminDashboard = () => {
                             className={`sidebar-link ${activeMenu === 'billings' ? 'active' : ''}`}
                             onClick={() => setActiveMenu('billings')}
                         >
-                            💰 Billings
+                            <span>💰</span> Billings
                         </button>
                     </li>
                 </ul>
+                <div style={{ marginTop: 'auto', padding: '20px 0' }}>
+                    <button className="sidebar-link" onClick={handleLogout} style={{ color: 'var(--danger)' }}>
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
             </div>
 
             <div className="main-content">
                 <div className="header">
-                    <h1>Admin Dashboard</h1>
-                    <div className="header-actions">
-                        <button className="btn btn-danger" onClick={handleLogout}>
-                            🚪 Logout
-                        </button>
+                    <div>
+                        <h1 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '4px' }}>Welcome Back, Admin</h1>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Here's what's happening today.</p>
                     </div>
                 </div>
 

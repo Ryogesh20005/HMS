@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -9,11 +9,18 @@ const api = axios.create({
     },
 });
 
+const storedToken = localStorage.getItem('access_token');
+if (storedToken) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+}
+
 // Add token to requests
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('access_token');
     if (token) {
+        config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${token}`;
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
     return config;
 });
@@ -23,22 +30,27 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+        if (error.response?.status === 401) {
             const refreshToken = localStorage.getItem('refresh_token');
-            if (refreshToken) {
+            if (refreshToken && !originalRequest?._retry) {
+                originalRequest._retry = true;
                 try {
                     const response = await axios.post(`${API_URL}/token/refresh/`, { refresh: refreshToken });
                     localStorage.setItem('access_token', response.data.access);
                     api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
+                    originalRequest.headers.Authorization = `Bearer ${response.data.access}`;
                     return api(originalRequest);
                 } catch (refreshError) {
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('refresh_token');
-                    window.location.href = '/login';
+                    // Refresh failed, clear auth and redirect
                 }
             }
+
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            delete api.defaults.headers.common['Authorization'];
+            window.location.href = '/login';
         }
+
         return Promise.reject(error);
     }
 );
@@ -47,7 +59,13 @@ api.interceptors.response.use(
 export const authService = {
     register: (userData) => api.post('/register/', userData),
     login: (credentials) => api.post('/login/', credentials),
-    logout: () => api.post('/logout/'),
+    logout: () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        delete api.defaults.headers.common['Authorization'];
+        return api.post('/logout/');
+    },
     getCurrentUser: () => api.get('/users/me/'),
 };
 

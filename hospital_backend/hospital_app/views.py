@@ -34,7 +34,11 @@ class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
     
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        if request.data.get('role') == 'admin':
+            return Response({'role': ['Admin registration is not allowed.']}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_fields = {field: request.data.get(field) for field in UserSerializer.Meta.fields if field in request.data}
+        serializer = UserSerializer(data=user_fields)
         if serializer.is_valid():
             user = serializer.save()
             
@@ -68,8 +72,9 @@ class RegisterView(APIView):
                     return Response({'error': 'Failed to create doctor profile'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
             refresh = RefreshToken.for_user(user)
+            user_data = UserSerializer(user).data
             return Response({
-                'user': serializer.data,
+                'user': user_data,
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             }, status=status.HTTP_201_CREATED)
@@ -150,7 +155,9 @@ class PatientViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def my_profile(self, request):
         if request.user.role == 'patient':
-            patient = get_object_or_404(Patient, user=request.user)
+            patient, created = Patient.objects.get_or_create(user=request.user)
+            if created:
+                patient.save()
             serializer = self.get_serializer(patient)
             return Response(serializer.data)
         return Response({'error': 'Only patients can access this'}, status=status.HTTP_403_FORBIDDEN)
@@ -302,11 +309,12 @@ class BillingViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'])
     def record_payment(self, request, pk=None):
+        from decimal import Decimal
         billing = self.get_object()
         paid_amount = request.data.get('paid_amount', 0)
         payment_method = request.data.get('payment_method', 'cash')
         
-        billing.paid_amount += float(paid_amount)
+        billing.paid_amount += Decimal(str(paid_amount))
         billing.payment_method = payment_method
         
         if billing.paid_amount >= billing.total_amount:

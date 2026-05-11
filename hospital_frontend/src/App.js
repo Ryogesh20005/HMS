@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import AdminDashboard from './dashboards/AdminDashboard';
 import DoctorDashboard from './dashboards/DoctorDashboard';
 import PatientDashboard from './dashboards/PatientDashboard';
+import api from './services/api';
 import './styles/auth.css';
 //  import './styles/dashboard.css';
 //  import './styles/glassmorphism.css';
@@ -45,6 +46,15 @@ const PrivateRoute = ({ children, requiredRole }) => {
 };
 
 function App() {
+    useEffect(() => {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+            delete api.defaults.headers.common['Authorization'];
+        }
+    }, []);
+
     return (
         <BrowserRouter>
             <Routes>

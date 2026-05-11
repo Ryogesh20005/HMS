@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/api';
+import api, { authService } from '../services/api';
 import '../styles/auth.css';
 
 const Register = () => {
@@ -64,8 +64,9 @@ const Register = () => {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('user', JSON.stringify(response.data.user));
+            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
             
-            navigate(role === 'admin' ? '/admin/dashboard' : role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard');
+            navigate(role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard');
         } catch (err) {
             console.error('Registration error:', err);
             const errorMsg = err.response?.data?.detail || 
@@ -82,22 +83,14 @@ const Register = () => {
         <div className="auth-container">
             <div className="auth-card register-card">
                 <div className="auth-header">
-                    <h1>🏥 Hospital Management System</h1>
-                    <p>Create your account</p>
+                    <h1>🏥 JOIN OUR NETWORK</h1>
+                    <p>Create an account to access medical services.</p>
                 </div>
                 
                 {error && <div className="alert alert-error">{error}</div>}
                 
                 <div className="role-selector">
-                    <label>I am a:</label>
                     <div className="role-buttons">
-                        <button
-                            type="button"
-                            className={`role-btn ${role === 'admin' ? 'active' : ''}`}
-                            onClick={() => setRole('admin')}
-                        >
-                            🔐 Admin
-                        </button>
                         <button
                             type="button"
                             className={`role-btn ${role === 'patient' ? 'active' : ''}`}
@@ -143,91 +136,94 @@ const Register = () => {
                         </div>
                     </div>
                     
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                            placeholder="Choose a username"
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="username">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                placeholder="Username"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                placeholder="your@email.com"
+                            />
+                        </div>
                     </div>
                     
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                            placeholder="your@email.com"
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label htmlFor="phone">Phone</label>
-                        <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            placeholder="Phone number"
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter a strong password"
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="phone">Phone</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder="Phone number"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="••••••••"
+                            />
+                        </div>
                     </div>
                     
                     {role === 'patient' && (
                         <>
-                            <hr />
-                            <h3>Medical Information (Optional)</h3>
+                            <div style={{ margin: '24px 0', height: '1px', background: 'var(--border-glass)' }}></div>
+                            <h3 style={{ fontSize: '18px', marginBottom: '20px', color: 'white' }}>Medical Information</h3>
                             
-                            <div className="form-group">
-                                <label htmlFor="date_of_birth">Date of Birth</label>
-                                <input
-                                    type="date"
-                                    id="date_of_birth"
-                                    name="date_of_birth"
-                                    value={patientData.date_of_birth}
-                                    onChange={handlePatientDataChange}
-                                />
-                            </div>
-                            
-                            <div className="form-group">
-                                <label htmlFor="blood_group">Blood Group</label>
-                                <select
-                                    id="blood_group"
-                                    name="blood_group"
-                                    value={patientData.blood_group}
-                                    onChange={handlePatientDataChange}
-                                >
-                                    <option value="">Select Blood Group</option>
-                                    <option value="A+">A+</option>
-                                    <option value="A-">A-</option>
-                                    <option value="B+">B+</option>
-                                    <option value="B-">B-</option>
-                                    <option value="O+">O+</option>
-                                    <option value="O-">O-</option>
-                                    <option value="AB+">AB+</option>
-                                    <option value="AB-">AB-</option>
-                                </select>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="date_of_birth">Date of Birth</label>
+                                    <input
+                                        type="date"
+                                        id="date_of_birth"
+                                        name="date_of_birth"
+                                        value={patientData.date_of_birth}
+                                        onChange={handlePatientDataChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="blood_group">Blood Group</label>
+                                    <select
+                                        id="blood_group"
+                                        name="blood_group"
+                                        value={patientData.blood_group}
+                                        onChange={handlePatientDataChange}
+                                    >
+                                        <option value="">Select</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                    </select>
+                                </div>
                             </div>
                             
                             <div className="form-group">
@@ -237,44 +233,33 @@ const Register = () => {
                                     name="allergies"
                                     value={patientData.allergies}
                                     onChange={handlePatientDataChange}
-                                    placeholder="List any allergies (optional)"
+                                    placeholder="List any allergies..."
                                     rows="2"
-                                />
-                            </div>
-                            
-                            <div className="form-group">
-                                <label htmlFor="medical_history">Medical History</label>
-                                <textarea
-                                    id="medical_history"
-                                    name="medical_history"
-                                    value={patientData.medical_history}
-                                    onChange={handlePatientDataChange}
-                                    placeholder="Brief medical history (optional)"
-                                    rows="3"
+                                    style={{ width: '100%', padding: '12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', color: 'white' }}
                                 />
                             </div>
                             
                             <div className="form-row">
                                 <div className="form-group">
-                                    <label htmlFor="emergency_contact_name">Emergency Contact Name</label>
+                                    <label htmlFor="emergency_contact_name">Emergency Contact</label>
                                     <input
                                         type="text"
                                         id="emergency_contact_name"
                                         name="emergency_contact_name"
                                         value={patientData.emergency_contact_name}
                                         onChange={handlePatientDataChange}
-                                        placeholder="Emergency contact name"
+                                        placeholder="Name"
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="emergency_contact">Emergency Contact Phone</label>
+                                    <label htmlFor="emergency_contact">Phone</label>
                                     <input
                                         type="tel"
                                         id="emergency_contact"
                                         name="emergency_contact"
                                         value={patientData.emergency_contact}
                                         onChange={handlePatientDataChange}
-                                        placeholder="Emergency contact phone"
+                                        placeholder="Phone"
                                     />
                                 </div>
                             </div>
@@ -283,58 +268,58 @@ const Register = () => {
                     
                     {role === 'doctor' && (
                         <>
-                            <hr />
-                            <h3>Professional Information</h3>
+                            <div style={{ margin: '24px 0', height: '1px', background: 'var(--border-glass)' }}></div>
+                            <h3 style={{ fontSize: '18px', marginBottom: '20px', color: 'white' }}>Professional Information</h3>
                             
-                            <div className="form-group">
-                                <label htmlFor="specialization">Specialization</label>
-                                <select
-                                    id="specialization"
-                                    name="specialization"
-                                    value={doctorData.specialization}
-                                    onChange={handleDoctorDataChange}
-                                >
-                                    <option value="general">General Medicine</option>
-                                    <option value="cardiology">Cardiology</option>
-                                    <option value="dermatology">Dermatology</option>
-                                    <option value="neurology">Neurology</option>
-                                    <option value="orthopedics">Orthopedics</option>
-                                    <option value="pediatrics">Pediatrics</option>
-                                    <option value="psychiatry">Psychiatry</option>
-                                    <option value="surgery">Surgery</option>
-                                    <option value="gynecology">Gynecology</option>
-                                </select>
-                            </div>
-                            
-                            <div className="form-group">
-                                <label htmlFor="license_number">License Number</label>
-                                <input
-                                    type="text"
-                                    id="license_number"
-                                    name="license_number"
-                                    value={doctorData.license_number}
-                                    onChange={handleDoctorDataChange}
-                                    required
-                                    placeholder="Medical License Number"
-                                />
-                            </div>
-                            
-                            <div className="form-group">
-                                <label htmlFor="qualification">Qualification</label>
-                                <input
-                                    type="text"
-                                    id="qualification"
-                                    name="qualification"
-                                    value={doctorData.qualification}
-                                    onChange={handleDoctorDataChange}
-                                    required
-                                    placeholder="e.g., MBBS, MD"
-                                />
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="specialization">Specialization</label>
+                                    <select
+                                        id="specialization"
+                                        name="specialization"
+                                        value={doctorData.specialization}
+                                        onChange={handleDoctorDataChange}
+                                    >
+                                        <option value="general">General Medicine</option>
+                                        <option value="cardiology">Cardiology</option>
+                                        <option value="dermatology">Dermatology</option>
+                                        <option value="neurology">Neurology</option>
+                                        <option value="orthopedics">Orthopedics</option>
+                                        <option value="pediatrics">Pediatrics</option>
+                                        <option value="psychiatry">Psychiatry</option>
+                                        <option value="surgery">Surgery</option>
+                                        <option value="gynecology">Gynecology</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="license_number">License Number</label>
+                                    <input
+                                        type="text"
+                                        id="license_number"
+                                        name="license_number"
+                                        value={doctorData.license_number}
+                                        onChange={handleDoctorDataChange}
+                                        required
+                                        placeholder="License #"
+                                    />
+                                </div>
                             </div>
                             
                             <div className="form-row">
                                 <div className="form-group">
-                                    <label htmlFor="years_of_experience">Years of Experience</label>
+                                    <label htmlFor="qualification">Qualification</label>
+                                    <input
+                                        type="text"
+                                        id="qualification"
+                                        name="qualification"
+                                        value={doctorData.qualification}
+                                        onChange={handleDoctorDataChange}
+                                        required
+                                        placeholder="e.g. MBBS"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="years_of_experience">Experience (Years)</label>
                                     <input
                                         type="number"
                                         id="years_of_experience"
@@ -344,29 +329,17 @@ const Register = () => {
                                         min="0"
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="consultation_fee">Consultation Fee ($)</label>
-                                    <input
-                                        type="number"
-                                        id="consultation_fee"
-                                        name="consultation_fee"
-                                        value={doctorData.consultation_fee}
-                                        onChange={handleDoctorDataChange}
-                                        min="0"
-                                        step="0.01"
-                                    />
-                                </div>
                             </div>
                         </>
                     )}
                     
-                    <button type="submit" disabled={loading} className="btn btn-primary">
-                        {loading ? 'Registering...' : 'Register'}
+                    <button type="submit" disabled={loading} className="btn btn-primary" style={{ marginTop: '12px' }}>
+                        {loading ? 'Processing...' : 'Create Account'}
                     </button>
                 </form>
                 
                 <div className="auth-footer">
-                    <p>Already have an account? <Link to="/login">Login here</Link></p>
+                    <p>Already a member? <Link to="/login">Sign In</Link></p>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/api';
+import api, { authService } from '../services/api';
 import '../styles/auth.css';
 const Login = () => {
     const navigate = useNavigate();
@@ -22,6 +22,7 @@ const Login = () => {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('user', JSON.stringify(response.data.user));
+            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
             
             // Redirect based on role
             const role = response.data.user.role;
@@ -33,7 +34,8 @@ const Login = () => {
                 navigate('/patient/dashboard');
             }
         } catch (err) {
-            setError(err.response?.data?.detail || 'Login failed. Please try again.');
+            const errorMsg = err.response?.data?.detail || err.response?.data?.non_field_errors?.[0] || 'Login failed. Please try again.';
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -43,8 +45,8 @@ const Login = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <h1>🏥 CHOLAN HOSPITAL </h1>
-                    <p>Login to your account</p>
+                    <h1>🏥 CHOLAN HOSPITAL</h1>
+                    <p>Welcome back! Please enter your details.</p>
                 </div>
                 
                 {error && <div className="alert alert-error">{error}</div>}
@@ -59,7 +61,8 @@ const Login = () => {
                             value={formData.username}
                             onChange={handleChange}
                             required
-                            placeholder="Enter your username"
+                            placeholder="e.g. johndoe"
+                            autoComplete="username"
                         />
                     </div>
                     
@@ -72,17 +75,18 @@ const Login = () => {
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            placeholder="Enter your password"
+                            placeholder="••••••••"
+                            autoComplete="current-password"
                         />
                     </div>
                     
                     <button type="submit" disabled={loading} className="btn btn-primary">
-                        {loading ? 'Logging in...' : 'Login'}
+                        {loading ? 'Authenticating...' : 'Sign In'}
                     </button>
                 </form>
                 
                 <div className="auth-footer">
-                    <p>Don't have an account? <Link to="/register">Register here</Link></p>
+                    <p>New here? <Link to="/register">Create an account</Link></p>
                 </div>
             </div>
         </div>

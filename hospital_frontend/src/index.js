@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './styles/variables.css';
 //  import './styles/dashboard.css';
 //  import './styles/glassmorphism.css';
 //  import './styles/animations.css';
