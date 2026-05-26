@@ -7,7 +7,7 @@
     align-items: center;
     padding: 20px;
     background: linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.7)),
-                url('../../public/medical_background.png') center/cover no-repeat fixed;
+        url('../../public/medical_background.png') center/cover no-repeat fixed;
     position: relative;
     overflow: hidden;
 }
@@ -174,8 +174,13 @@
 
 /* Animations */
 @keyframes drift {
-    from { transform: translate(0, 0); }
-    to { transform: translate(100px, 50px); }
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(100px, 50px);
+    }
 }
 
 @keyframes fadeInScale {
@@ -183,6 +188,7 @@
         opacity: 0;
         transform: scale(0.95) translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -326,7 +332,7 @@
 }
 
 .stats-card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
     padding: 24px;
@@ -381,7 +387,7 @@ th {
 
 td {
     padding: 16px;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
     border-top: 1px solid var(--border-glass);
     border-bottom: 1px solid var(--border-glass);
 }
@@ -404,10 +410,25 @@ td:last-child {
     text-transform: uppercase;
 }
 
-.badge-pending { background: rgba(245, 158, 11, 0.1); color: #fbbf24; }
-.badge-scheduled { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
-.badge-completed { background: rgba(16, 185, 129, 0.1); color: #34d399; }
-.badge-cancelled { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+.badge-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
+}
+
+.badge-scheduled {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+}
+
+.badge-completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+}
+
+.badge-cancelled {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+}
 
 .modal-overlay {
     position: fixed;
