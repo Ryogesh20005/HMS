@@ -234,7 +234,7 @@ const AdminDashboard = () => {
                 <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                     <span>☰</span>
                 </button>
-                <span className="mobile-logo">🏥 Cholan HMS</span>
+                <span className="mobile-logo">🏥 Cholan Hospital</span>
             </div>
 
             {/* Sidebar Overlay on mobile */}
@@ -640,7 +640,7 @@ const AdminDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label>Available</label>
-                                            <input type="checkbox" name="is_available" checked={formData.is_available || false} onChange={(e) => setFormData({...formData, is_available: e.target.checked})} />
+                                            <input type="checkbox" name="is_available" checked={formData.is_available || false} onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })} />
                                         </div>
                                     </>
                                 )}
