@@ -5,9 +5,6 @@ import '../styles/auth.css';
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: '', password: '' });
-    const [emailOrPhone, setEmailOrPhone] = useState('');
-    const [otp, setOtp] = useState('');
-    const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -21,8 +18,7 @@ const Login = () => {
         setError('');
         
         try {
-        const loginData = { username: formData.username, password: formData.password };
-        const response = await authService.login(loginData);
+            const response = await authService.login(formData);
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -34,20 +30,6 @@ const Login = () => {
                 navigate('/admin/dashboard');
             } else if (role === 'doctor') {
                 navigate('/doctor/dashboard');
-            } else if (role === 'patient') {
-                // Patient role: verify email/phone, OTP, and set password
-                try {
-                    await api.post('/patient-login/', {
-                        emailOrPhone: emailOrPhone,
-                        otp: otp,
-                        password: newPassword,
-                    });
-                    // After successful verification, navigate to patient dashboard
-                    navigate('/patient/dashboard');
-                } catch (patientErr) {
-                    const patientErrorMsg = patientErr.response?.data?.detail || 'Patient verification failed.';
-                    setError(patientErrorMsg);
-                }
             } else {
                 navigate('/patient/dashboard');
             }
@@ -84,55 +66,19 @@ const Login = () => {
                         />
                     </div>
                     
-                <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="••••••••"
-                autoComplete="current-password"
-            />
-        </div>
-        <div className="form-group">
-            <label htmlFor="emailOrPhone">Email or Phone</label>
-            <input
-                type="text"
-                id="emailOrPhone"
-                name="emailOrPhone"
-                value={emailOrPhone}
-                onChange={(e) => setEmailOrPhone(e.target.value)}
-                required
-                placeholder="e.g. email@example.com or 1234567890"
-            />
-        </div>
-        <div className="form-group">
-            <label htmlFor="otp">OTP</label>
-            <input
-                type="text"
-                id="otp"
-                name="otp"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                required
-                placeholder="Enter OTP"
-            />
-        </div>
-        <div className="form-group">
-            <label htmlFor="newPassword">Create Password</label>
-            <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                placeholder="Set your password"
-            />
-        </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            placeholder="••••••••"
+                            autoComplete="current-password"
+                        />
+                    </div>
                     
                     <button type="submit" disabled={loading} className="btn btn-primary">
                         {loading ? 'Authenticating...' : 'Sign In'}
