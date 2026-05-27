@@ -7,6 +7,7 @@ import {
     billingService,
 } from '../services/api';
 import '../styles/auth.css';
+import '../styles/modal.css';
 
 
 const AdminDashboard = () => {
