@@ -34,6 +34,11 @@ class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
     
     def post(self, request):
+        # Prevent duplicate registration
+        if User.objects.filter(username=request.data.get('username')).exists():
+            return Response({'username': ['A user with this username already exists.']}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(email=request.data.get('email')).exists():
+            return Response({'email': ['A user with this email already exists.']}, status=status.HTTP_400_BAD_REQUEST)
         if request.data.get('role') == 'admin':
             return Response({'role': ['Admin registration is not allowed.']}, status=status.HTTP_400_BAD_REQUEST)
 
