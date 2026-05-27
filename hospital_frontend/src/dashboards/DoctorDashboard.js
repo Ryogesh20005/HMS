@@ -15,6 +15,7 @@ const DoctorDashboard = () => {
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(false); // eslint-disable-line no-unused-vars
     const [editingProfile, setEditingProfile] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         loadDashboardData();
@@ -90,17 +91,29 @@ const DoctorDashboard = () => {
     const completedAppointments = appointments.filter(apt => apt.status === 'completed');
 
     return (
-        <div className="dashboard-layout">
-            <div className="sidebar">
+        <div className={`dashboard-layout ${mobileMenuOpen ? 'mobile-sidebar-open' : ''}`}>
+            {/* Mobile Header Bar */}
+            <div className="mobile-header">
+                <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    <span>☰</span>
+                </button>
+                <span className="mobile-logo">🏥 Cholan HMS</span>
+            </div>
+
+            {/* Sidebar Overlay on mobile */}
+            {mobileMenuOpen && <div className="sidebar-overlay" onClick={() => setMobileMenuOpen(false)}></div>}
+
+            <div className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <span style={{ fontSize: '24px' }}>🏥</span>
                     <span>Doctor Panel</span>
+                    <button className="mobile-sidebar-close" onClick={() => setMobileMenuOpen(false)}>✕</button>
                 </div>
                 <ul className="sidebar-menu">
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'overview' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('overview')}
+                            onClick={() => { setActiveMenu('overview'); setMobileMenuOpen(false); }}
                         >
                             <span>📊</span> Overview
                         </button>
@@ -108,7 +121,7 @@ const DoctorDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'appointments' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('appointments')}
+                            onClick={() => { setActiveMenu('appointments'); setMobileMenuOpen(false); }}
                         >
                             <span>📅</span> Appointments
                         </button>
@@ -116,7 +129,7 @@ const DoctorDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'patients' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('patients')}
+                            onClick={() => { setActiveMenu('patients'); setMobileMenuOpen(false); }}
                         >
                             <span>👥</span> Patients
                         </button>
@@ -124,7 +137,7 @@ const DoctorDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'profile' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('profile')}
+                            onClick={() => { setActiveMenu('profile'); setMobileMenuOpen(false); }}
                         >
                             <span>👤</span> Profile
                         </button>

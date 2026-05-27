@@ -1,54 +1,72 @@
 :root {
-    /* Colors - HSL based for easier manipulation */
-    --primary-h: 221;
-    --primary-s: 83%;
-    --primary-l: 53%;
-    
+    /* === Premium Medical Dashboard Color Palette === */
+
+    /* Primary - Deep Cerulean Blue */
+    --primary-h: 214;
+    --primary-s: 90%;
+    --primary-l: 52%;
     --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
-    --primary-light: hsl(var(--primary-h), var(--primary-s), 65%);
-    --primary-dark: hsl(var(--primary-h), var(--primary-s), 40%);
-    
-    --secondary-h: 162;
-    --secondary-s: 84%;
-    --secondary-l: 39%;
+    --primary-light: hsl(var(--primary-h), 85%, 68%);
+    --primary-dark: hsl(var(--primary-h), 90%, 38%);
+    --primary-glow: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.25);
+
+    /* Secondary - Vibrant Teal/Emerald */
+    --secondary-h: 168;
+    --secondary-s: 80%;
+    --secondary-l: 42%;
     --secondary: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l));
-    
+    --secondary-light: hsl(var(--secondary-h), 75%, 60%);
+
+    /* Accent - Warm Amber */
     --accent: #f59e0b;
-    --danger: #ef4444;
+    --accent-light: #fcd34d;
+
+    /* Semantic Colors */
+    --danger: #f43f5e;
+    --danger-light: #fb7185;
     --success: #10b981;
-    --warning: #facc15;
-    
-    /* Dark Theme Backgrounds */
-    --bg-dark: #020617;
-    --bg-card: rgba(15, 23, 42, 0.8);
-    --bg-glass: rgba(255, 255, 255, 0.03);
-    --border-glass: rgba(255, 255, 255, 0.1);
-    --border-highlight: rgba(255, 255, 255, 0.2);
-    
-    /* Text Colors */
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --text-dim: #64748b;
-    
-    /* Shadows & Effects */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    
-    /* Transitions */
+    --success-light: #34d399;
+    --warning: #f59e0b;
+    --warning-light: #fcd34d;
+
+    /* === Premium Dark Background System === */
+    --bg-dark: #03071a;
+    --bg-surface: #090f22;
+    --bg-card: rgba(12, 20, 42, 0.85);
+    --bg-card-hover: rgba(18, 28, 55, 0.9);
+    --bg-glass: rgba(255, 255, 255, 0.04);
+    --bg-glass-hover: rgba(255, 255, 255, 0.07);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(255, 255, 255, 0.18);
+    --border-primary: hsla(var(--primary-h), 80%, 60%, 0.35);
+
+    /* === Text Colors === */
+    --text-main: #f0f4ff;
+    --text-secondary: #cbd5e1;
+    --text-muted: #7d8fb3;
+    --text-dim: #4b5a7a;
+
+    /* === Premium Shadows === */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.6);
+    --shadow-glass: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --shadow-primary: 0 8px 20px -4px hsla(var(--primary-h), 80%, 55%, 0.4);
+    --shadow-success: 0 8px 20px -4px rgba(16, 185, 129, 0.35);
+
+    /* === Transitions === */
     --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* Layout */
+
+    /* === Layout === */
     --sidebar-width: 280px;
     --header-height: 80px;
-    --radius-sm: 8px;
+    --radius-sm: 6px;
     --radius-md: 12px;
-    --radius-lg: 20px;
-    --radius-xl: 32px;
+    --radius-lg: 18px;
+    --radius-xl: 28px;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');

@@ -20,6 +20,7 @@ const PatientDashboard = () => {
     const [loading, setLoading] = useState(false); // eslint-disable-line no-unused-vars
     const [showBookingForm, setShowBookingForm] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         loadDashboardData();
@@ -130,17 +131,29 @@ const PatientDashboard = () => {
     ];
 
     return (
-        <div className="dashboard-layout">
-            <div className="sidebar">
+        <div className={`dashboard-layout ${mobileMenuOpen ? 'mobile-sidebar-open' : ''}`}>
+            {/* Mobile Header Bar */}
+            <div className="mobile-header">
+                <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    <span>☰</span>
+                </button>
+                <span className="mobile-logo">🏥 Cholan HMS</span>
+            </div>
+
+            {/* Sidebar Overlay on mobile */}
+            {mobileMenuOpen && <div className="sidebar-overlay" onClick={() => setMobileMenuOpen(false)}></div>}
+
+            <div className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <span style={{ fontSize: '24px' }}>🏥</span>
                     <span>Patient Panel</span>
+                    <button className="mobile-sidebar-close" onClick={() => setMobileMenuOpen(false)}>✕</button>
                 </div>
                 <ul className="sidebar-menu">
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'overview' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('overview')}
+                            onClick={() => { setActiveMenu('overview'); setMobileMenuOpen(false); }}
                         >
                             <span>📊</span> Overview
                         </button>
@@ -148,7 +161,7 @@ const PatientDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'doctors' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('doctors')}
+                            onClick={() => { setActiveMenu('doctors'); setMobileMenuOpen(false); }}
                         >
                             <span>👨‍⚕️</span> Find Doctors
                         </button>
@@ -156,7 +169,7 @@ const PatientDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'appointments' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('appointments')}
+                            onClick={() => { setActiveMenu('appointments'); setMobileMenuOpen(false); }}
                         >
                             <span>📅</span> My Appointments
                         </button>
@@ -164,7 +177,7 @@ const PatientDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'billings' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('billings')}
+                            onClick={() => { setActiveMenu('billings'); setMobileMenuOpen(false); }}
                         >
                             <span>💰</span> Billings
                         </button>
@@ -172,7 +185,7 @@ const PatientDashboard = () => {
                     <li>
                         <button
                             className={`sidebar-link ${activeMenu === 'profile' ? 'active' : ''}`}
-                            onClick={() => setActiveMenu('profile')}
+                            onClick={() => { setActiveMenu('profile'); setMobileMenuOpen(false); }}
                         >
                             <span>👤</span> Profile
                         </button>
