@@ -6,6 +6,7 @@ import {
     appointmentService,
     billingService,
 } from '../services/api';
+import '../styles/modal.css';
 
 
 const PatientDashboard = () => {
@@ -364,7 +365,7 @@ const PatientDashboard = () => {
 
                         {showBookingForm && selectedDoctor && (
                             <div className="modal-overlay">
-                                <div className="modal">
+                                <div className="modal-content">
                                     <div className="modal-header">
                                         <h2>Book Appointment</h2>
                                         <button
@@ -534,7 +535,7 @@ const BookingForm = ({ doctor, onSubmit, onCancel }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit}>
             <p style={{ marginBottom: '20px' }}>
                 Booking appointment with <strong>Dr. {doctor.user?.first_name} {doctor.user?.last_name}</strong>
             </p>
@@ -572,7 +573,7 @@ const BookingForm = ({ doctor, onSubmit, onCancel }) => {
                 />
             </div>
 
-            <div className="modal-footer">
+            <div className="form-actions">
                 <button type="submit" className="btn btn-primary">Book Appointment</button>
                 <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
             </div>
