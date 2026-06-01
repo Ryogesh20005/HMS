@@ -3,7 +3,8 @@ Django settings for hospital_project project.
 """
 
 from pathlib import Path
-import os
+import pymysql
+pymysql.install_as_MySQLdb()
 from datetime import timedelta
 from decouple import config
 from corsheaders.defaults import default_headers
@@ -64,27 +65,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hospital_project.wsgi.application'
 
 # Database configuration
-USE_SQLITE = config('USE_SQLITE', default=True, cast=bool)
+USE_SQLITE = False
 
-if USE_SQLITE:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'IPVdTJuJAqdobfieXDaIFRICuegkLhsr',
+        'HOST': 'zephyr.proxy.rlwy.net',
+        'PORT': '35915',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME', default='hms_db'),   
-            'USER': config('DB_USER', default='postgres'),
-            'PASSWORD': config('DB_PASSWORD', default='yosh#####'),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
-            'CONN_MAX_AGE': 600,
-        }
-    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
