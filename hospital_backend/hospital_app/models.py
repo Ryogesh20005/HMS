@@ -73,7 +73,7 @@ class Doctor(models.Model):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor_profile')
     specialization = models.CharField(max_length=50, choices=SPECIALIZATION_CHOICES)
-    license_number = models.CharField(max_length=50, unique=True)
+    license_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
     qualification = models.CharField(max_length=200)
     years_of_experience = models.IntegerField(validators=[MinValueValidator(0)])
     consultation_fee = models.DecimalField(max_digits=8, decimal_places=2)
