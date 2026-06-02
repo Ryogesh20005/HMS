@@ -57,66 +57,68 @@ api.interceptors.response.use(
 
 // Auth endpoints
 export const authService = {
-    register: (userData) => api.post('/register/', userData),
-    login: (credentials) => api.post('/login/', credentials),
+    register: (userData) => api.post('register/', userData),
+    login: (credentials) => api.post('login/', credentials),
+    requestOTP: (email) => api.post('request-otp/', { email }),
+    verifyOTP: (email, otp_code) => api.post('verify-otp/', { email, otp_code }),
     logout: () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
         delete api.defaults.headers.common['Authorization'];
-        return api.post('/logout/');
+        return api.post('logout/');
     },
-    getCurrentUser: () => api.get('/users/me/'),
+    getCurrentUser: () => api.get('users/me/'),
 };
 
 // User endpoints
 export const userService = {
-    getUsers: (role) => api.get('/users/', { params: { role } }),
-    getUser: (id) => api.get(`/users/${id}/`),
-    updateUser: (id, data) => api.patch(`/users/${id}/`, data),
-    changePassword: (data) => api.post('/users/change_password/', data),
+    getUsers: (role) => api.get('users/', { params: { role } }),
+    getUser: (id) => api.get(`users/${id}/`),
+    updateUser: (id, data) => api.patch(`users/${id}/`, data),
+    changePassword: (data) => api.post('users/change_password/', data)
 };
 
 // Patient endpoints
 export const patientService = {
-    getPatients: () => api.get('/patients/'),
-    getPatient: (id) => api.get(`/patients/${id}/`),
-    createPatient: (data) => api.post('/patients/', data),
-    updatePatient: (id, data) => api.patch(`/patients/${id}/`, data),
-    deletePatient: (id) => api.delete(`/patients/${id}/`),
-    getMyProfile: () => api.get('/patients/my_profile/'),
+    getPatients: () => api.get('patients/'),
+    getPatient: (id) => api.get(`patients/${id}/`),
+    createPatient: (data) => api.post('patients/', data),
+    updatePatient: (id, data) => api.patch(`patients/${id}/`, data),
+    deletePatient: (id) => api.delete(`patients/${id}/`),
+    getMyProfile: () => api.get('patients/my_profile/')
 };
 
 // Doctor endpoints
 export const doctorService = {
-    getDoctors: (filters = {}) => api.get('/doctors/', { params: filters }),
-    getDoctor: (id) => api.get(`/doctors/${id}/`),
-    createDoctor: (data) => api.post('/doctors/', data),
-    updateDoctor: (id, data) => api.patch(`/doctors/${id}/`, data),
-    deleteDoctor: (id) => api.delete(`/doctors/${id}/`),
-    getMyProfile: () => api.get('/doctors/my_profile/'),
-    updateAvailability: (isAvailable) => api.post('/doctors/update_availability/', { is_available: isAvailable }),
+    getDoctors: (filters = {}) => api.get('doctors/', { params: filters }),
+    getDoctor: (id) => api.get(`doctors/${id}/`),
+    createDoctor: (data) => api.post('doctors/', data),
+    updateDoctor: (id, data) => api.patch(`doctors/${id}/`, data),
+    deleteDoctor: (id) => api.delete(`doctors/${id}/`),
+    getMyProfile: () => api.get('doctors/my_profile/'),
+    updateAvailability: (isAvailable) => api.post('doctors/update_availability/', { is_available: isAvailable })
 };
 
 // Appointment endpoints
 export const appointmentService = {
-    getAppointments: (filters = {}) => api.get('/appointments/', { params: filters }),
-    getAppointment: (id) => api.get(`/appointments/${id}/`),
-    createAppointment: (data) => api.post('/appointments/', data),
-    updateAppointment: (id, data) => api.patch(`/appointments/${id}/`, data),
-    deleteAppointment: (id) => api.delete(`/appointments/${id}/`),
-    cancelAppointment: (id) => api.post(`/appointments/${id}/cancel/`),
-    completeAppointment: (id) => api.post(`/appointments/${id}/complete/`),
+    getAppointments: (filters = {}) => api.get('appointments/', { params: filters }),
+    getAppointment: (id) => api.get(`appointments/${id}/`),
+    createAppointment: (data) => api.post('appointments/', data),
+    updateAppointment: (id, data) => api.patch(`appointments/${id}/`, data),
+    deleteAppointment: (id) => api.delete(`appointments/${id}/`),
+    cancelAppointment: (id) => api.post(`appointments/${id}/cancel/`),
+    completeAppointment: (id) => api.post(`appointments/${id}/complete/`),
 };
 
 // Billing endpoints
 export const billingService = {
-    getBillings: (filters = {}) => api.get('/billings/', { params: filters }),
-    getBilling: (id) => api.get(`/billings/${id}/`),
-    createBilling: (data) => api.post('/billings/', data),
-    updateBilling: (id, data) => api.patch(`/billings/${id}/`, data),
-    deleteBilling: (id) => api.delete(`/billings/${id}/`),
-    recordPayment: (id, paymentData) => api.post(`/billings/${id}/record_payment/`, paymentData),
+    getBillings: (filters = {}) => api.get('billings/', { params: filters }),
+    getBilling: (id) => api.get(`billings/${id}/`),
+    createBilling: (data) => api.post('billings/', data),
+    updateBilling: (id, data) => api.patch(`billings/${id}/`, data),
+    deleteBilling: (id) => api.delete(`billings/${id}/`),
+    recordPayment: (id, paymentData) => api.post(`billings/${id}/record_payment/`, paymentData)
 };
 
 export default api;
