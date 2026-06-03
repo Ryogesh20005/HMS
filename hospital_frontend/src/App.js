@@ -7,6 +7,7 @@ import DoctorDashboard from './dashboards/DoctorDashboard';
 import PatientDashboard from './dashboards/PatientDashboard';
 import api from './services/api';
 import './styles/auth.css';
+import { ThemeProvider } from './context/ThemeContext';
 //  import './styles/dashboard.css';
 //  import './styles/glassmorphism.css';
 //  import './styles/animations.css';
@@ -56,37 +57,39 @@ function App() {
     }, []);
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route
-                    path="/admin/dashboard/*"
-                    element={
-                        <PrivateRoute requiredRole="admin">
-                            <AdminDashboard />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/doctor/dashboard/*"
-                    element={
-                        <PrivateRoute requiredRole="doctor">
-                            <DoctorDashboard />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/patient/dashboard/*"
-                    element={
-                        <PrivateRoute requiredRole="patient">
-                            <PatientDashboard />
-                        </PrivateRoute>
-                    }
-                />
-                <Route path="/" element={<Navigate to="/login" />} />
-            </Routes>
-        </BrowserRouter>
+        <ThemeProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                        path="/admin/dashboard/*"
+                        element={
+                            <PrivateRoute requiredRole="admin">
+                                <AdminDashboard />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/doctor/dashboard/*"
+                        element={
+                            <PrivateRoute requiredRole="doctor">
+                                <DoctorDashboard />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/patient/dashboard/*"
+                        element={
+                            <PrivateRoute requiredRole="patient">
+                                <PatientDashboard />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route path="/" element={<Navigate to="/login" />} />
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider>
     );
 }
 
